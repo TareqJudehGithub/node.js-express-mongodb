@@ -14,7 +14,7 @@ app.set("views", "views"); //for the views folder
 
 //Routes:
 const adminRoute = require("./routes/admin");
-// const shopRoutes = require("./routes/shop");
+const shopRoutes = require("./routes/shop");
 const errorController = require("./controllers/404");
 
 //middlwares:
@@ -29,20 +29,20 @@ app.use(express.static(path.join(__dirname, "/public")));
 
 //end-points:
 app.use(adminRoute);
-// app.use(shopRoutes);
+app.use(shopRoutes);
 
 //Error page not found for undefined routes.
 app.use(errorController.get404);
 
 mongoConnect(() => {
-   
+     
      app.listen(4000, () => {
           app.listen()
           ?
           console.log("Server is up and running on PORT 4000!")
           :
           console.log("Error starting Express server.")
-     });
+     })
 });
 
 

@@ -1,14 +1,9 @@
 //imports:
-const Product = require("../models/products");
+const Product = require("../models/product");
 
 //users routes:
 exports.getProducts = (req, res, next) => {
-     Product.findAll({
-          // order: Sequelize.col("price")
-          order: [
-               ["id", "ASC"]            
-          ]
-     })
+     Product.fetchAll()
           .then(products => {
                res.render(
                     "shop/product-list.ejs",
@@ -24,10 +19,9 @@ exports.getProducts = (req, res, next) => {
  exports.getProductById = (req, res, next) => {
   //* The value we use after params is the value we used
      //in the route in /routes/shop.js   (/products/:id)
-     const prodId = req.params.id;
-     // Product.findOne({where: { id: prodId }})
-     // OR: 
-     Product.findByPk(prodId)
+     const id = req.params.id;
+
+     Product.findById(id)
           .then((product) => {
                res.render(
                     "shop/product-detail.ejs",
@@ -42,7 +36,7 @@ exports.getProducts = (req, res, next) => {
 };
 //Shop (main page)
  exports.getIndex = (req, res, next) => {
-     Product.findAll()
+     Product.fetchAll()
      .then(products => {
           res.render(
                "shop/index.ejs",
