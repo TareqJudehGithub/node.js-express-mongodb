@@ -1,6 +1,6 @@
 //imports:
 const Product = require("../models/product");
-
+let productTitle;
 //actions: 
 
 //admin products 
@@ -86,10 +86,8 @@ exports.postAddProduct = (req, res, next) => {
   };
 
 exports.postDeleteProduct = (req, res, next) => {
-     const id = req.body.id;
-     const title = req.body.title;
-
-     console.log(title + " was successfully deleted!")
+     const id = req.body.id; 
+      
      Product.deleteById(id)
     .then(result => {
          res.redirect("/admin/products");
