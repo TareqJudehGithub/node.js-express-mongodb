@@ -18,7 +18,7 @@ exports.getProducts = (req, res, next) => {
 //Product details:
  exports.getProductById = (req, res, next) => {
   //* The value we use after params is the value we used
-     //in the route in /routes/shop.js   (/products/:id)
+     //in /routes/shop.js   (/products/:id)
      const id = req.params.id;
 
      Product.findById(id)
@@ -45,14 +45,12 @@ exports.getProducts = (req, res, next) => {
                     pageTitle: "Shop",
                     path: "/"
                })
-     
           })
      .catch(err => {console.log(err)});
  };
  
  //Cart
  exports.getCart = (req, res, next) => {
-
 
      //fetching cart from db:
      req.user

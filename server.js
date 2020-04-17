@@ -1,12 +1,13 @@
 //core modules
 const path = require("path");
 
+//database connection pool:
+const mongoConnect = require("./util/database").mongoConnect;
+const User = require("./models/user");
+
 //Express Server setup
 const express = require("express");
 const app = express();
-
-//database connection pool:
-const mongoConnect = require("./util/database").mongoConnect;
 
 //EJS 1. setup:
 app.set("view engine", "ejs");
@@ -21,7 +22,12 @@ const errorController = require("./controllers/404");
 app.use(express.urlencoded( {extended: false }));
 
 app.use((req, res, next) => {
-    next();
+     User.findById("5e9a2caf3331e41504f3b221")
+     .then(user => {
+          req.user = user;
+          next();
+     })
+     .catch(err => console.log(err));
 });
 
 //static files path: to grant access to other folders:
@@ -35,7 +41,7 @@ app.use(shopRoutes);
 app.use(errorController.get404);
 
 mongoConnect(() => {
-     
+    
      app.listen(4000, () => {
           app.listen()
           ?

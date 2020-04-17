@@ -4,12 +4,13 @@ const ObjectId = require("mongodb").ObjectId;
 const getDB = require("../util/database").db;
 
 class Product {
-     constructor(title, price, imageUrl, description, id) {
+     constructor(title, price, imageUrl, description, id, userId) {
           this.title = title;
           this.price = price;
           this.imageUrl = imageUrl;
           this.description = description;
-          this._id = id ? new ObjectId(id) : null
+          this._id = id ? ObjectId(id) : null;
+          this.userId = userId;
      } 
     
      //Saving product in MongoDB
@@ -67,8 +68,7 @@ class Product {
           const db = getDB();
           return db
           .collection("products")
-          .find({_id: ObjectId(ID) })
-          .next()
+          .findOne({_id: ObjectId(ID) })
           .then(product => {
                console.log(product.title + " found by ID.")
                return product;
@@ -77,14 +77,26 @@ class Product {
                console.log(err);
           }) 
      }
+     
      static deleteById(id) {
+
           const db = getDB();
           return db
           .collection("products")
           .deleteOne({_id: ObjectId(id)})
           .then(result => {
-               
-               console.log(" Item was successfully deleted!");        
+               console.log("Item was successfully deleted!");        
+          })
+          .catch(err => {
+               console.log(err);
+          })
+     }
+     static clearAllproducts() {
+          const db = getDB();
+          return db.collection("products")
+          .deleteMany({})
+          .then(result => {
+               console.log("All products were deleted.");        
           })
           .catch(err => {
                console.log(err);
