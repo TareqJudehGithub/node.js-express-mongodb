@@ -9,7 +9,7 @@ class Product {
           this.price = price;
           this.imageUrl = imageUrl;
           this.description = description;
-          this._id = id ? ObjectId(id) : null;
+          this._id = id ? new ObjectId(id) : null;
           this.userId = userId;
      } 
     
@@ -68,7 +68,7 @@ class Product {
           const db = getDB();
           return db
           .collection("products")
-          .findOne({_id: ObjectId(ID) })
+          .findOne({_id: new ObjectId(ID) })
           .then(product => {
                console.log(product.title + " found by ID.")
                return product;
@@ -83,20 +83,9 @@ class Product {
           const db = getDB();
           return db
           .collection("products")
-          .deleteOne({_id: ObjectId(id)})
+          .deleteOne({_id: new ObjectId(id)})
           .then(result => {
                console.log("Item was successfully deleted!");        
-          })
-          .catch(err => {
-               console.log(err);
-          })
-     }
-     static clearAllproducts() {
-          const db = getDB();
-          return db.collection("products")
-          .deleteMany({})
-          .then(result => {
-               console.log("All products were deleted.");        
           })
           .catch(err => {
                console.log(err);

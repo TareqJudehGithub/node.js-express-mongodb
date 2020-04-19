@@ -55,83 +55,51 @@ exports.getProducts = (req, res, next) => {
      //fetching cart from db:
      req.user
      .getCart()
-     .then(cart => {
-     //fetching products inside the cart from db: Cart.belongsTomany(Product, {through: CartItem});
-          return cart.getProducts()
-          //products available in cart and rendering them to page /cart:
-          .then(product => {
+     .then(products => {
+          //products available in cart and rendering them to page /cart:        
                res.render(
                     ("shop/cart.ejs"),
                     {
-                         products: product,
+                         products: products,
                          pageTitle: "Shopping Cart",
                          path: "/cart"
                     });
-          })
-          .catch(err => console.log(err));
      })
      .catch(err => console.log(err));
  };
 
 //Add to Cart
 exports.postCart = (req, res, next) => {
-     const prodId = req.body.Id;
-     let fetchedCart;
-     let newQuantity = 1;
-
-     //accessing the cart:
-     req.user
-     .getCart()
-     //cart
-     .then(cart => {       
-          fetchedCart = cart;   
-          return cart.getProducts({where: {id: prodId} });     
-     })
-     .then(products => {
-          let product;
-
-          if (products.length > 0) {
-               product = products[0]     
-          }     
-          if(product) {            
-               const currentQuantity = product.cartItem.quantity;
-               newQuantity = currentQuantity +1;
-               return product;
-          } 
-          return Product.findByPk(prodId)
-     })
+     const id = req.body.Id;
+     //fetching the product by ID from Product, we want to add to cart:
+     Product.findById(id)
+     // in .then() we should have the product we want to add in the cart:
      .then(product => {
-          console.log(`Item ${product.title} is now in the cart.`);
-          return fetchedCart.addProduct(product, {
-               through: {quantity: newQuantity}
-               })         
-     })
-     .then(() => {
-          res.redirect("/cart");
-     })
-     .catch(err => console.log(err));   
-   };
-
-//Delete product
-exports.postCartDeleteProduct = (req, res, next) => {
-     const prodId = req.body.id;
-     //get cart for the current user:
-     req.user.getCart()
-     .then(cart => {
-          return cart.getProducts({ where: {id: prodId }})
-     })
-     .then(products => {
-          //fetch the product to be deleted:
-          const product = products[0];
-          console.log( product.title + " was successfully deleted.");
-          //delete the product:
-          return product.cartItem.destroy();
-     })
+          console.log(product.title + " was added to cart successfully!");
+          //calling addToCart from /models/user.js model
+          return req.user.addtoCart(product);
+          //the .then(result) is the result of the update operation
+          //in /models/user/addToCart:
+          })
      .then(result => {
           res.redirect("/cart");
      })
-     .catch(err => console.log(err));
-  
+     .catch(err => console.log(err)); 
+   };
+
+//Delete products in cart
+exports.postCartDeleteProduct = (req, res, next) => {
+     const id = req.body.id;
+     
+     //get cart for the current user:
+     req.user.deleteItemFromCart(id)
+     .then(result => {
+          res.redirect("/cart");
+     })
+     // req.product.(id)
+     // .then(result => {
+     //      console.log("delete result: "+result);
+     // })
 };
 
 //move all cart items into postOrder
@@ -139,57 +107,25 @@ exports.postOrder = (req, res, next) => {
    
      let fetchedCart;
      req.user
-     //access to the cart:
-     .getCart()
-     .then(cart => {
-          fetchedCart = cart;
-
-          //must use return, to associate products to this order:
-          return cart.getProducts()
-     })
-     //access to the cart, we get access to the products by default:
-     .then(products => {
-          return req.user
-          .createOrder()
-          .then(order => {
-               //associating products to this order:
-               //adding the product and it's quantity to the order:           
-               return order.addProducts(
-                    products.map(product => {
-                    //to include product qty field in orderItem table:
-
-//.map(element).(order-item table name: orderItem) = {column name(value): quantity: (products model name.table name. column name)};
-                    product.orderItem = { 
-                         quantity: product.cartItem.quantity
-                     };
-                    return product;
-               }))
-          })  
-          .catch(err => console.log("Error order" + err));   
-     })
-     .then(result => {
-          //clearing cart after placing an order:
-          return fetchedCart.setProducts(null);
-          // console.log(productName +  " was added successfully to Order.")
-          
-     })
+     .addOrder()
      .then(result => {
           res.redirect("/orders");
      })
-     .catch(err => console.log("Error products: " + err));
+     .catch(err => console.log(err));
 }
 
 exports.getOrders = (req, res, next) => {
      req.user
-     .getOrders({include: ["products"]})
+     .getOrders()
      .then(orders => {
           res.render(
                "shop/orders.ejs",
                {
                     orders: orders,
-                    pageTitle: "Orders",
+                    pageTitle: "Completed Orders",
                     path: "/orders",     
-               })
+               });
+          // console.log(`Users orders are: ${orders}`)
      })
      .catch(err => console.log("Error getOrders: " + err));
 };

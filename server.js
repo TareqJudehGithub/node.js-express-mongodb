@@ -22,9 +22,14 @@ const errorController = require("./controllers/404");
 app.use(express.urlencoded( {extended: false }));
 
 app.use((req, res, next) => {
-     User.findById("5e9a2caf3331e41504f3b221")
+     User.findById("5e9b106ac63224448cb2c1ed")
      .then(user => {
-          req.user = user;
+          req.user = new User(
+               user.name,
+               user.email, 
+               user.cart,
+               user._id
+               );
           next();
      })
      .catch(err => console.log(err));

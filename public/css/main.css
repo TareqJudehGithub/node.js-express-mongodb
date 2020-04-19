@@ -12,7 +12,7 @@ body {
 main {
   padding: 1rem;
   margin: auto;
-  font-size: calc(9px + 1vmin);
+  font-size: calc(11px + .8vmin);
 }
 form {
   display: inline;
@@ -170,6 +170,7 @@ form {
 .card__content h2,
 .card__content p {
   margin: 0;
+  font-size: inherit;
 }
 
 .card__image {

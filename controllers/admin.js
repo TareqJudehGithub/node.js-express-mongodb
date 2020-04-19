@@ -1,6 +1,6 @@
 //imports:
 const Product = require("../models/product");
-let productTitle;
+
 //actions: 
 
 //admin products 
@@ -94,6 +94,11 @@ exports.postAddProduct = (req, res, next) => {
 
 exports.postDeleteProduct = (req, res, next) => {
      const id = req.body.id; 
+
+     // return req.user.addToCart(product)
+     // .then(result => {
+     //      console.log(result);
+     // })
       
      Product.deleteById(id)
     .then(result => {

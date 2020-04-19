@@ -12,50 +12,59 @@
           </div>
                <h3>Shopping Cart is empty</h3>
           <% }else{%>
-               <div class="order card">
-                    <div>
-                         <div class="cart-header">
-                              <span class="header-field">
+              
+               <div class="">
+                        
+                         <div class="order-header">
+                              
+                              <span class="order-header-field">
                                    Quantity
                               </span>          
-                              <span class="header-field">
+                              <span class="order-header-field">
                                    Title
                               </span>
           
-                              <span class="header-field">
+                              <span class="order-header-field">
                                    Image
                               </span>
-                              <span class="header-field">
-                              Price
+                              <span class="order-header-field">
+                                   Price
                               </span>
                                                    
                          </div>    
-                    </div>
-                   <div>
+                    
+                   
                         <%orders.map(order => { %>
-                              <div>
-                                   <div class="product__cart">
-                                        <%order.products.map(product => {%>
-                                             <span class="cart-item">
-                                                  <%=product.orderItem.quantity%>
-                                             </span >
-                                             <span class="cart-item">
-                                                  <%=product.title%>
-                                             </span>
-                                             <span class="cart-item">
-                                                  <img class="cart-image" src="<%=product.imageUrl%>"  alt="<%=product.imageUrl%>">
-                                             </span>                 
-                                             <span class="cart-item">
-                                                  <%=product.price%>
-                                             </span>
+                                          
+                         <div class="order-border">
+                         <p> Order Summary</p>  
+                             
+                         
+                                        <%order.items.map(product => {%>
+                                             
+                                             <div class="orders-list">
+                                                  <span class="order-list-item">
+                                                       <%=product.quantity%>
+                                                  </span >
+                                                  <span class="order-list-item">
+                                                       <%=product.title%>
+                                                  </span>
+                                                  <span class="order-list-item">
+                                                       <img src="<%=product.imageUrl%>" height="100px" width="auto"  alt="<%=product.imageUrl%>">
+                                                  </span>                 
+                                                  <span class="order-list-item">
+                                                       <%=product.price%>
+                                                  </span>
+                                             </div>
                                         <%})%>
-                                   </div>
-                              </div>
+                         </div>                                 
+                      
      
                          <%})%>
-                   </div>
-               </div>
+                 
+               
           <%}%>
+               </div>    
      </main>
     
 <%- include("../includes/end.ejs") %>
