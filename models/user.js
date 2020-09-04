@@ -19,29 +19,7 @@ class User {
               console.log(err);
          });
      };
-     getCart() {
-          const productIds = this.cart.items.map(id => {
-               return id.productId;
-          })
-          const db = getDB()
-          return db
-          .collection("products")
-          .find({_id: {$in: productIds}})
-          .toArray()
-          //we have an array of products fetched from the mongodb database:
-          .then(products => {
-               return products.map(product => {
-                    return {...product, quantity: this.cart.items.find(i => {
-                         //to identify the one product(from .find()) in all cart items, matches
-                         //the id of the product we fetched from the database.
-                         return i.productId.toString() === product._id.toString();
-                    })
-                    .quantity
-               };
-               })
-          })
-          .catch(err => {console.log(err)});
-     }
+    
      addtoCart(product) {
           const cartProductIndex = this.cart.items.findIndex(cp => {
                //Checking if the item exists:
@@ -74,8 +52,32 @@ class User {
           return db
           .collection("users")      
           .updateOne({ _id: ObjectId(this._id) },
-          { $set: { cart: updatedCart} } )
+          { $set: {cart: updatedCart} } )
      };
+     getCart() {
+          const productIds = this.cart.items.map(id => {
+               return id.productId;
+          });
+          const db = getDB()
+          return db
+          .collection("products")
+          .find({_id: {$in: productIds}})
+          .toArray()
+          //we have an array of products fetched from the mongodb database:
+          .then(products => {
+               return products.map(product => {
+                    return {...product, quantity: this.cart.items.find(i => {
+                         //to identify the one product(from .find()) in all cart items, matches
+                         //the id of the product we fetched from the database.
+                         return i.productId.toString() === product._id.toString();
+                    })
+                    .quantity
+               };
+               })
+          })
+          .catch(err => {console.log(err)});
+     }
+
      deleteItemFromCart(productID) {
           const updatedCartItems = this.cart.items.filter(item => {
      //We will filter (remove) the item which is removed from the cart,
